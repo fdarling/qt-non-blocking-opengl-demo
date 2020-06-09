@@ -14,6 +14,7 @@ public:
     bool create();
     void start();
     void run();
+    void stop();
 
     void resizeGL(int w, int h);
 
@@ -33,6 +34,7 @@ private:
     float _scale;
     bool _lagEnabled;
     int _width, _height;
+    bool _running;
 };
 
 #endif // OPENGLRENDERER_H

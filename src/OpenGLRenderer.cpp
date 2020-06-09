@@ -27,11 +27,18 @@ void OpenGLRenderer::setLagEnabled(bool on)
     _lagEnabled = on;
 }
 
+void OpenGLRenderer::stop()
+{
+    _running = false;
+}
+
 void OpenGLRenderer::start()
 {
     if (!create()) return;
 
-    while(1) {
+    _running = true;
+
+    while(_running) {
         run();
     }
 }

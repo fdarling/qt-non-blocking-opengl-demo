@@ -11,6 +11,11 @@ OpenGLWindow::OpenGLWindow()
     initializeGL();
 }
 
+OpenGLWindow::~OpenGLWindow()
+{
+    _glRenderer->stop();
+}
+
 void OpenGLWindow::setScale(float newScale)
 {
     _glRenderer->setScale(newScale);

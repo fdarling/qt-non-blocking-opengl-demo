@@ -10,6 +10,7 @@ class OpenGLWindow : public QWindow
     Q_OBJECT
 public:
     OpenGLWindow();
+    ~OpenGLWindow();
 public slots:
     void setScale(float newScale);
     void setLagEnabled(bool on);
