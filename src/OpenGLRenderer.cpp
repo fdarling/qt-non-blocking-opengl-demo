@@ -4,6 +4,7 @@
 #include "DrawCube.h"
 #include <cmath>
 #include <QThread>
+#include <QDebug>
 
 OpenGLRenderer::OpenGLRenderer(OpenGLWindow *onGlWindow)
     : _glContext(nullptr), _glWindow(onGlWindow), _scale(1.0), _lagEnabled(false)
@@ -37,6 +38,7 @@ void OpenGLRenderer::start()
     if (!create()) return;
 
     _running = true;
+    _frameTimer.start();
 
     while(_running) {
         run();
@@ -85,6 +87,17 @@ void OpenGLRenderer::run()
         _glContext->swapBuffers(_glWindow);
 
         emit frameSwapped();
+
+        if (_targetFPS>0){
+            float targetElapsedNsecs = 1.0 / _targetFPS * 1000000000.0;
+
+            if ( targetElapsedNsecs > _frameTimer.nsecsElapsed() )
+            {
+                QThread::msleep( (targetElapsedNsecs - _frameTimer.nsecsElapsed()) / 1000000.0 );
+            }
+        }
+
+        _frameTimer.restart();
 
         if (_lagEnabled)
             QThread::msleep(250);

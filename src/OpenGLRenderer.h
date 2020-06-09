@@ -30,11 +30,14 @@ private:
     OpenGLWindow *_glWindow;
 
     QElapsedTimer _timer;
+    QElapsedTimer _frameTimer;
+
+    int _targetFPS = 60;
 
     float _scale;
     bool _lagEnabled;
     int _width, _height;
-    bool _running;
+    std::atomic<bool> _running;
 };
 
 #endif // OPENGLRENDERER_H
