@@ -12,7 +12,7 @@ QT_BEGIN_NAMESPACE
 class QLabel;
 QT_END_NAMESPACE
 
-class OpenGLWidget;
+class OpenGLWindow;
 
 class MainWindow : public QMainWindow
 {
@@ -27,7 +27,7 @@ private slots:
     void slot_FrameDrawn();
     void slot_UpdateStats();
 private:
-    OpenGLWidget *_openglWidget;
+    OpenGLWindow *_openglWidget;
     QLabel *_cpuLabel;
     QLabel *_fpsLabel;
     int _frameCounter;

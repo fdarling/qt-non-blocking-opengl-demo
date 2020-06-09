@@ -1,5 +1,5 @@
 #include "MainWindow.h"
-#include "OpenGLWidget.h"
+#include "OpenGLWindow.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -15,14 +15,19 @@
 static const int FPS_COUNTER_INTERVAL_MS = 1000;
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), _openglWidget(new OpenGLWidget), _cpuLabel(nullptr), _fpsLabel(nullptr), _frameCounter(0), _oldProcJiffies(0), _oldAllJiffies(0)
+    : QMainWindow(parent), _cpuLabel(nullptr), _fpsLabel(nullptr), _frameCounter(0), _oldProcJiffies(0), _oldAllJiffies(0)
 {
+    _openglWidget = new OpenGLWindow;
+
     QWidget * const dummy = new QWidget;
     {
         QVBoxLayout * const vbox = new QVBoxLayout(dummy);
-        vbox->addWidget(_openglWidget, 1);
+
+        QWidget* glWidget = QWidget::createWindowContainer(_openglWidget, this);
+        vbox->addWidget(glWidget, 1);
+
         connect(_openglWidget, SIGNAL(frameSwapped()), this, SLOT(slot_FrameDrawn()));
-        connect(_openglWidget, SIGNAL(frameSwapped()), _openglWidget, SLOT(update()));
+//        connect(_openglWidget, SIGNAL(frameSwapped()), _openglWidget, SLOT(update()));
 
         QSlider * const slider = new QSlider;
         slider->setOrientation(Qt::Horizontal);
