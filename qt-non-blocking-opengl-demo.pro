@@ -3,16 +3,18 @@ CONFIG += c++11
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
+INCLUDEPATH += src src/lib
+
 SOURCES += \
-    src/DrawCube.cpp \
+    src/DemoRenderer.cpp \
     src/MainWindow.cpp \
-    src/OpenGLWindow.cpp \
-    src/OpenGLRenderer.cpp \
+    src/lib/OpenGLWindow.cpp \
+    src/lib/OpenGLRenderer.cpp \
     src/main.cpp
 
 HEADERS += \
-    src/DrawCube.h \
+    src/DemoRenderer.h \
     src/MainWindow.h \
-    src/OpenGLWindow.h \
-    src/OpenGLRenderer.h
+    src/lib/OpenGLWindow.h \
+    src/lib/OpenGLRenderer.h
 

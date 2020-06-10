@@ -5,8 +5,8 @@
 #include <QThread>
 #include <cmath>
 
-OpenGLWindow::OpenGLWindow()
-    : QWindow()
+OpenGLWindow::OpenGLWindow(OpenGLRenderer *glRenderer)
+    : QWindow(), _glRenderer(glRenderer)
 {
     initializeGL();
 }
@@ -14,16 +14,6 @@ OpenGLWindow::OpenGLWindow()
 OpenGLWindow::~OpenGLWindow()
 {
     _glRenderer->stop();
-}
-
-void OpenGLWindow::setScale(float newScale)
-{
-    _glRenderer->setScale(newScale);
-}
-
-void OpenGLWindow::setLagEnabled(bool on)
-{
-    _glRenderer->setLagEnabled(on);
 }
 
 void OpenGLWindow::initializeGL()
@@ -39,22 +29,6 @@ void OpenGLWindow::initializeGL()
 
     setFormat(format);
     create();
-
-    _glRenderer = new OpenGLRenderer(this);
-    _glThread = new QThread();
-    _glRenderer->moveToThread(_glThread);
-
-    connect(_glThread, &QThread::started, _glRenderer, &OpenGLRenderer::start);
-    connect(_glThread, &QThread::finished, _glThread, &QObject::deleteLater);
-
-    connect(_glRenderer, &OpenGLRenderer::frameSwapped, this, &OpenGLWindow::onRendererSwapped);
-
-    _glThread->start();
-}
-
-void OpenGLWindow::onRendererSwapped()
-{
-    emit frameSwapped();
 }
 
 void OpenGLWindow::resizeEvent(QResizeEvent *ev)

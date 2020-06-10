@@ -1,5 +1,7 @@
-#include "DrawCube.h"
+#include "DemoRenderer.h"
+#include "OpenGLWindow.h"
 #include <QOpenGLFunctions_3_0>
+#include <QThread>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -74,4 +76,52 @@ void gldPerspective(QOpenGLFunctions_3_0 *f, GLdouble fovx, GLdouble aspect, GLd
 
     // Add to current matrix
     f->glMultMatrixd(m);
+}
+
+void DemoRenderer::paintGL(QOpenGLFunctions_3_0 * const f)
+{
+    f->glViewport(0, 0, _width, _height);
+
+    f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    f->glEnable(GL_CULL_FACE);
+    f->glEnable(GL_DEPTH_TEST);
+    f->glDepthMask(GL_TRUE);
+
+    f->glMatrixMode(GL_PROJECTION);
+    f->glLoadIdentity();
+
+    // Calculate The Aspect Ratio Of The Window
+    gldPerspective(f, 45.0f, static_cast<GLfloat>(_width) / static_cast<GLfloat>(_height), 0.1f, 100.0f);
+
+    f->glMatrixMode(GL_MODELVIEW);
+    f->glLoadIdentity();
+
+    const float angle = fmodf(static_cast<float>(_timer.elapsed())/100.0f, 360.0f);
+
+    f->glTranslatef(0.0f, 0.0f, -7.0f);
+    f->glScalef(_scale, _scale, _scale);
+
+    f->glRotatef(angle, 0.0f, 1.0f, 0.0f); // Rotate The cube around the Y axis
+    f->glRotatef(angle, 1.0f, 1.0f, 1.0f);
+
+    DrawCube(f);
+}
+
+void DemoRenderer::swapGL()
+{
+    if (_lagEnabled)
+        QThread::msleep( 250 );
+
+    emit frameSwapped();
+}
+
+
+void DemoRenderer::setScale(float newScale)
+{
+    _scale = newScale;
+}
+
+void DemoRenderer::setLagEnabled(bool on)
+{
+    _lagEnabled = on;
 }

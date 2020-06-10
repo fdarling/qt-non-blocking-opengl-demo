@@ -3,10 +3,7 @@
 #include <QMainWindow>
 #include <QTimer>
 #include <QPointer>
-
-// #include "example_surface.h"
-// #include "threadedopenglcontainer.h"
-// #include "imagewidget.h"
+#include "DemoRenderer.h"
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -27,7 +24,7 @@ private slots:
     void slot_FrameDrawn();
     void slot_UpdateStats();
 private:
-    OpenGLWindow *_openglWidget;
+    DemoRenderer *_demoRenderer;
     QLabel *_cpuLabel;
     QLabel *_fpsLabel;
     int _frameCounter;

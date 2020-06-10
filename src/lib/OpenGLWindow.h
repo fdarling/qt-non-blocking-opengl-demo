@@ -9,15 +9,8 @@ class OpenGLWindow : public QWindow
 {
     Q_OBJECT
 public:
-    OpenGLWindow();
+    OpenGLWindow(OpenGLRenderer *glRenderer);
     ~OpenGLWindow();
-public slots:
-    void setScale(float newScale);
-    void setLagEnabled(bool on);
-    void onRendererSwapped();
-
-signals:
-    void frameSwapped();
 
 protected:
     void resizeEvent(QResizeEvent *ev);
@@ -25,5 +18,4 @@ protected:
     void paintGL() ;
 
     OpenGLRenderer *_glRenderer;
-    QThread *_glThread;
 };

@@ -4,12 +4,13 @@
 #include <QObject>
 #include <QOpenGLContext>
 #include "OpenGLWindow.h"
+#include <QOpenGLFunctions_3_0>
 
 class OpenGLRenderer : public QObject
 {
     Q_OBJECT
 public:
-    explicit OpenGLRenderer(OpenGLWindow *onGlWindow);
+    explicit OpenGLRenderer();
 
     bool create();
     void start();
@@ -18,26 +19,24 @@ public:
 
     void resizeGL(int w, int h);
 
-signals:
-    void frameSwapped();
+    QWidget* createWidget(QWidget* parent);
 
-public slots:
-    void setScale(float newScale);
-    void setLagEnabled(bool on);
+protected:
+    virtual void paintGL(QOpenGLFunctions_3_0 * const glFunc) = 0;
+    virtual void swapGL() = 0;
+
+    int _width, _height;
 
 private:
     QOpenGLContext *_glContext;
     OpenGLWindow *_glWindow;
 
-    QElapsedTimer _timer;
     QElapsedTimer _frameTimer;
 
     int _targetFPS = 60;
 
-    float _scale;
-    bool _lagEnabled;
-    int _width, _height;
     std::atomic<bool> _running;
+    QThread *_glThread;
 };
 
 #endif // OPENGLRENDERER_H

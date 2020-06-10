@@ -1,5 +1,4 @@
 #include "MainWindow.h"
-#include "OpenGLWindow.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -17,17 +16,15 @@ static const int FPS_COUNTER_INTERVAL_MS = 1000;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), _cpuLabel(nullptr), _fpsLabel(nullptr), _frameCounter(0), _oldProcJiffies(0), _oldAllJiffies(0)
 {
-    _openglWidget = new OpenGLWindow;
+    _demoRenderer = new DemoRenderer();
 
     QWidget * const dummy = new QWidget;
     {
         QVBoxLayout * const vbox = new QVBoxLayout(dummy);
 
-        QWidget* glWidget = QWidget::createWindowContainer(_openglWidget, this);
-        vbox->addWidget(glWidget, 1);
+        vbox->addWidget(_demoRenderer->createWidget(this), 1);
 
-        connect(_openglWidget, SIGNAL(frameSwapped()), this, SLOT(slot_FrameDrawn()));
-//        connect(_openglWidget, SIGNAL(frameSwapped()), _openglWidget, SLOT(update()));
+        connect(_demoRenderer, SIGNAL(frameSwapped()), this, SLOT(slot_FrameDrawn()));
 
         QSlider * const slider = new QSlider;
         slider->setOrientation(Qt::Horizontal);
@@ -42,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
 
         QCheckBox * const lagCheckbox = new QCheckBox("Enable OpenGL Lag");
         // connect(lagCheckbox, SIGNAL(toggled(bool)), this, SLOT(slot_LagToggled(bool)));
-        connect(lagCheckbox, SIGNAL(toggled(bool)), _openglWidget, SLOT(setLagEnabled(bool)));
+        connect(lagCheckbox, SIGNAL(toggled(bool)), _demoRenderer, SLOT(setLagEnabled(bool)));
         vbox->addWidget(lagCheckbox);
     }
     setCentralWidget(dummy);
@@ -67,7 +64,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::slot_ZoomChanged(int value)
 {
-    _openglWidget->setScale(static_cast<float>(value) / 50.0);
+    _demoRenderer->setScale(static_cast<float>(value) / 50.0);
 }
 
 void MainWindow::slot_LagToggled(bool on)
