@@ -15,7 +15,6 @@ public:
 protected:
     void resizeEvent(QResizeEvent *ev);
     void initializeGL() ;
-    void paintGL() ;
 
     OpenGLRenderer *_glRenderer;
 };
