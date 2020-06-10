@@ -78,6 +78,11 @@ void gldPerspective(QOpenGLFunctions_3_0 *f, GLdouble fovx, GLdouble aspect, GLd
     f->glMultMatrixd(m);
 }
 
+DemoRenderer::DemoRenderer()
+{
+    _timer.start();
+}
+
 void DemoRenderer::paintGL(QOpenGLFunctions_3_0 * const f)
 {
     f->glViewport(0, 0, _width, _height);

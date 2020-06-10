@@ -9,14 +9,13 @@ class DemoRenderer : public OpenGLRenderer
 {
     Q_OBJECT
 public:
-    explicit DemoRenderer() = default;
+    explicit DemoRenderer();
+
+    void setScale(float newScale);
+    void setLagEnabled(bool on);
 
 signals:
     void frameSwapped();
-
-public slots:
-    void setScale(float newScale);
-    void setLagEnabled(bool on);
 
 protected:
     virtual void paintGL(QOpenGLFunctions_3_0 * const glFunc);

@@ -38,8 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
         vbox->addWidget(resetButton);*/
 
         QCheckBox * const lagCheckbox = new QCheckBox("Enable OpenGL Lag");
-        // connect(lagCheckbox, SIGNAL(toggled(bool)), this, SLOT(slot_LagToggled(bool)));
-        connect(lagCheckbox, SIGNAL(toggled(bool)), _demoRenderer, SLOT(setLagEnabled(bool)));
+        connect(lagCheckbox, SIGNAL(toggled(bool)), this, SLOT(slot_LagToggled(bool)));
         vbox->addWidget(lagCheckbox);
     }
     setCentralWidget(dummy);
@@ -69,9 +68,7 @@ void MainWindow::slot_ZoomChanged(int value)
 
 void MainWindow::slot_LagToggled(bool on)
 {
-    Q_UNUSED(on);
-    // if (gl)
-        // gl->surface->setLag(on);
+    _demoRenderer->setLagEnabled(on);
 }
 
 /*void MainWindow::slot_ResetClicked()
