@@ -5,6 +5,7 @@
 #include <QOpenGLContext>
 #include <QOpenGLFunctions_3_0>
 #include <QElapsedTimer>
+#include <QMutex>
 #include "OpenGLWindow.h"
 
 class OpenGLRenderer : public QObject
@@ -38,7 +39,8 @@ private:
 
     int _targetFPS = 60;
 
-    std::atomic<bool> _running;
+    QMutex _mutex;
+    bool _running;
     QThread *_glThread;
 };
 

@@ -28,7 +28,9 @@ bool OpenGLRenderer::create()
 
 void OpenGLRenderer::stop()
 {
+    _mutex.lock();
     _running = false;
+    _mutex.unlock();
 }
 
 void OpenGLRenderer::start()
@@ -38,7 +40,14 @@ void OpenGLRenderer::start()
     _running = true;
     _frameTimer.start();
 
-    while(_running) {
+    while(1) {
+        _mutex.lock();
+        if (!_running){
+            _mutex.unlock();
+            return;
+        }
+
+        _mutex.unlock();
         run();
     }
 }
