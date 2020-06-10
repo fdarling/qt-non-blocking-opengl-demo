@@ -75,9 +75,7 @@ void OpenGLRenderer::run()
 
 QWidget* OpenGLRenderer::createWidget(QWidget* parent)
 {
-    QWidget* glWidget = QWidget::createWindowContainer(_glWindow, parent);
-
-    return glWidget;
+    return QWidget::createWindowContainer(_glWindow, parent);
 }
 
 void OpenGLRenderer::setTargetFPS(int targetFps)

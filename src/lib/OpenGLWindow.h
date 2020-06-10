@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QWindow>
-#include <QElapsedTimer>
 
 class OpenGLRenderer;
 

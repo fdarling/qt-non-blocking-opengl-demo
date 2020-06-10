@@ -3,8 +3,9 @@
 
 #include <QObject>
 #include <QOpenGLContext>
-#include "OpenGLWindow.h"
 #include <QOpenGLFunctions_3_0>
+#include <QElapsedTimer>
+#include "OpenGLWindow.h"
 
 class OpenGLRenderer : public QObject
 {
