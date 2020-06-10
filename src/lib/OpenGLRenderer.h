@@ -8,18 +8,13 @@
 
 class OpenGLRenderer : public QObject
 {
+    friend class OpenGLWindow;
+
     Q_OBJECT
 public:
     explicit OpenGLRenderer();
-
-    bool create();
-    void start();
-    void run();
-    void stop();
-
-    void resizeGL(int w, int h);
-
     QWidget* createWidget(QWidget* parent);
+    void setTargetFPS(int targetFps);
 
 protected:
     virtual void paintGL(QOpenGLFunctions_3_0 * const glFunc) = 0;
@@ -28,6 +23,13 @@ protected:
     int _width, _height;
 
 private:
+    void stop();
+    void resizeGL(int w, int h);
+
+    bool create();
+    void start();
+    void run();
+
     QOpenGLContext *_glContext;
     OpenGLWindow *_glWindow;
 

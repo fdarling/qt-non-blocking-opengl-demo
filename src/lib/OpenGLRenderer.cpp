@@ -79,3 +79,8 @@ QWidget* OpenGLRenderer::createWidget(QWidget* parent)
 
     return glWidget;
 }
+
+void OpenGLRenderer::setTargetFPS(int targetFps)
+{
+    _targetFPS = targetFps;
+}
