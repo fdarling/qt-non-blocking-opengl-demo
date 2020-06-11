@@ -79,6 +79,7 @@ void gldPerspective(QOpenGLFunctions_3_0 *f, GLdouble fovx, GLdouble aspect, GLd
 }
 
 DemoRenderer::DemoRenderer()
+    :OpenGLRenderer()
 {
     _timer.start();
 }

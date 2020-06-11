@@ -3,18 +3,22 @@ CONFIG += c++11
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
-INCLUDEPATH += src src/lib
+INCLUDEPATH += src src/lib src/util
 
 SOURCES += \
     src/DemoRenderer.cpp \
     src/MainWindow.cpp \
     src/lib/OpenGLWindow.cpp \
     src/lib/OpenGLRenderer.cpp \
-    src/main.cpp
+    src/lib/OpenGLThread.cpp \
+    src/main.cpp \
+    src/util/cpuusage.cpp
 
 HEADERS += \
     src/DemoRenderer.h \
     src/MainWindow.h \
     src/lib/OpenGLWindow.h \
-    src/lib/OpenGLRenderer.h
+    src/lib/OpenGLRenderer.h \
+    src/lib/OpenGLThread.h \
+    src/util/cpuusage.h
 

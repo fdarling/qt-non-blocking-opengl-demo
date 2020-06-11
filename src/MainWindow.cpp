@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QCoreApplication>
 #include <QThread>
+#include "cpuusage.h"
 
 static const int FPS_COUNTER_INTERVAL_MS = 1000;
 
@@ -79,6 +80,14 @@ void MainWindow::slot_LagToggled(bool on)
 void MainWindow::slot_FrameDrawn()
 {
     _frameCounter++;
+
+    static CpuUsage usage;
+    static int64_t u = usage.getCpuUsage() * 100.f;
+    static uint64_t cntru = 1;
+    if ((++cntru) % 10 == 0)
+        u = usage.getCpuUsage() * 100.f;
+
+    _cpuLabel->setText(QStringLiteral("CPU: %1%").arg(u));
 }
 
 // https://stackoverflow.com/questions/1420426/how-to-calculate-the-cpu-usage-of-a-process-by-pid-in-linux-from-c
@@ -124,20 +133,21 @@ static int getProcessJiffies(int pid)
 
 void MainWindow::slot_UpdateStats()
 {
-    const int pid = QCoreApplication::applicationPid();
-    const int newProcJiffies = getProcessJiffies(pid);
-    const int newAllJiffies = getTotalJiffies();
-    const int procDelta = newProcJiffies - _oldProcJiffies;
-    const int allDelta = newAllJiffies - _oldAllJiffies;
+//    return;
+//    const int pid = QCoreApplication::applicationPid();
+//    const int newProcJiffies = getProcessJiffies(pid);
+//    const int newAllJiffies = getTotalJiffies();
+//    const int procDelta = newProcJiffies - _oldProcJiffies;
+//    const int allDelta = newAllJiffies - _oldAllJiffies;
     char buffer[32];
-    if (allDelta != 0)
-    {
-        const double cpuUsage = static_cast<double>(procDelta) / static_cast<double>(allDelta);
-        snprintf(buffer, sizeof(buffer), "CPU: %3.1f%%", 100.0*QThread::idealThreadCount()*cpuUsage);
-        _cpuLabel->setText(QString(buffer));
-        _oldProcJiffies = newProcJiffies;
-        _oldAllJiffies = newAllJiffies;
-    }
+//    if (allDelta != 0)
+//    {
+//        const double cpuUsage = static_cast<double>(procDelta) / static_cast<double>(allDelta);
+//        snprintf(buffer, sizeof(buffer), "CPU: %3.1f%%", 100.0*QThread::idealThreadCount()*cpuUsage);
+//        _cpuLabel->setText(QString(buffer));
+//        _oldProcJiffies = newProcJiffies;
+//        _oldAllJiffies = newAllJiffies;
+//    }
     snprintf(buffer, sizeof(buffer), "FPS: %3.1f", static_cast<double>(_frameCounter)*(1000.0/static_cast<double>(FPS_COUNTER_INTERVAL_MS)));
     _fpsLabel->setText(QString(buffer));
     _frameCounter = 0;

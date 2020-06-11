@@ -11,12 +11,12 @@ OpenGLRenderer::OpenGLRenderer()
 {
     _glWindow = new OpenGLWindow(this);
 
-    _glThread = new QThread();
-    moveToThread(_glThread);
+    _glThread = new OpenGLThread();
 
     connect(_glThread, &QThread::started, this, &OpenGLRenderer::start);
     connect(_glThread, &QThread::finished, _glThread, &QObject::deleteLater);
 
+    moveToThread(_glThread);
     _glThread->start();
 }
 
@@ -31,6 +31,9 @@ void OpenGLRenderer::stop()
     _mutex.lock();
     _running = false;
     _mutex.unlock();
+
+    _glThread->requestInterruption();
+    _glThread->wait();
 }
 
 void OpenGLRenderer::start()
@@ -84,6 +87,7 @@ void OpenGLRenderer::run()
 
 QWidget* OpenGLRenderer::createWidget(QWidget* parent)
 {
+//    return new QWidget(parent);
     return QWidget::createWindowContainer(_glWindow, parent);
 }
 

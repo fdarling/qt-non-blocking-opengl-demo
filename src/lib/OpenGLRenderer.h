@@ -7,6 +7,7 @@
 #include <QElapsedTimer>
 #include <QMutex>
 #include "OpenGLWindow.h"
+#include "OpenGLThread.h"
 
 class OpenGLRenderer : public QObject
 {
@@ -41,7 +42,7 @@ private:
 
     QMutex _mutex;
     bool _running;
-    QThread *_glThread;
+    OpenGLThread *_glThread;
 };
 
 #endif // OPENGLRENDERER_H
