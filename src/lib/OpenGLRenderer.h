@@ -8,6 +8,7 @@
 #include <QMutex>
 #include "OpenGLWindow.h"
 #include "OpenGLThread.h"
+#include "lambda_thread.h"
 
 class OpenGLRenderer : public QObject
 {
@@ -42,7 +43,8 @@ private:
 
     QMutex _mutex;
     bool _running;
-    OpenGLThread *_glThread;
+//    OpenGLThread *_glThread;
+    LambdaThreadPtr thread{nullptr};
 };
 
 #endif // OPENGLRENDERER_H
