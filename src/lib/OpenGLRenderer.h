@@ -42,7 +42,6 @@ private:
 
     QMutex _mutex;
     bool _running;
-//    OpenGLThread *_glThread;
     LambdaThreadPtr thread{nullptr};
 };
 
