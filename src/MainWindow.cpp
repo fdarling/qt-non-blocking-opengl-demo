@@ -16,7 +16,7 @@
 static const int FPS_COUNTER_INTERVAL_MS = 1000;
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), _cpuLabel(nullptr), _fpsLabel(nullptr), _frameCounter(0), _oldProcJiffies(0), _oldAllJiffies(0)
+    : QMainWindow(parent), _cpuLabel(nullptr), _fpsLabel(nullptr), _frameCounter(0), _oldProcJiffies(0), _oldAllJiffies(0), _metricCPUUsageAlex(false)
 {
     _demoRenderer = new DemoRenderer();
 
@@ -35,16 +35,23 @@ MainWindow::MainWindow(QWidget *parent)
         connect(slider, SIGNAL(valueChanged(int)), this, SLOT(slot_ZoomChanged(int)));
         vbox->addWidget(slider);
 
+        QHBoxLayout * const hbox = new QHBoxLayout(dummy);
+        vbox->addLayout(hbox);
+
+        QCheckBox * const lagCheckbox = new QCheckBox("Enable OpenGL Lag");
+        connect(lagCheckbox, SIGNAL(toggled(bool)), this, SLOT(slot_LagToggled(bool)));
+        hbox->addWidget(lagCheckbox);
+
+        QCheckBox * const alexCheckbox = new QCheckBox("CPU Usage like Alexzk");
+        connect(alexCheckbox, SIGNAL(toggled(bool)), this, SLOT(slot_AlexToggled(bool)));
+        hbox->addWidget(alexCheckbox);
+
         QSpinBox *spinBox = new QSpinBox;
         spinBox->setRange(0, 240);
         spinBox->setSingleStep(1);
         spinBox->setValue(60);
         connect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(slot_TargetFPSChanged(int)));
-        vbox->addWidget(spinBox);
-
-        QCheckBox * const lagCheckbox = new QCheckBox("Enable OpenGL Lag");
-        connect(lagCheckbox, SIGNAL(toggled(bool)), this, SLOT(slot_LagToggled(bool)));
-        vbox->addWidget(lagCheckbox);
+        hbox->addWidget(spinBox);
     }
     setCentralWidget(dummy);
     {
@@ -76,6 +83,11 @@ void MainWindow::slot_LagToggled(bool on)
     _demoRenderer->setLagEnabled(on);
 }
 
+void MainWindow::slot_AlexToggled(bool on)
+{
+    _metricCPUUsageAlex = on;
+}
+
 void MainWindow::slot_TargetFPSChanged(int value)
 {
     _demoRenderer->setTargetFPS(value);
@@ -85,13 +97,15 @@ void MainWindow::slot_FrameDrawn()
 {
     _frameCounter++;
 
-    static CpuUsage usage;
-    static int64_t u = usage.getCpuUsage() * 100.f;
-    static uint64_t cntru = 1;
-    if ((++cntru) % 10 == 0)
-        u = usage.getCpuUsage() * 100.f;
+    if (_metricCPUUsageAlex){
+        static CpuUsage usage;
+        static int64_t u = usage.getCpuUsage() * 100.f;
+        static uint64_t cntru = 1;
+        if ((++cntru) % 10 == 0)
+            u = usage.getCpuUsage() * 100.f;
 
-    _cpuLabel->setText(QStringLiteral("CPU: %1%").arg(u));
+        _cpuLabel->setText(QStringLiteral("CPU: %1%").arg(u));
+    }
 }
 
 // https://stackoverflow.com/questions/1420426/how-to-calculate-the-cpu-usage-of-a-process-by-pid-in-linux-from-c
@@ -137,21 +151,23 @@ static int getProcessJiffies(int pid)
 
 void MainWindow::slot_UpdateStats()
 {
-//    return;
-//    const int pid = QCoreApplication::applicationPid();
-//    const int newProcJiffies = getProcessJiffies(pid);
-//    const int newAllJiffies = getTotalJiffies();
-//    const int procDelta = newProcJiffies - _oldProcJiffies;
-//    const int allDelta = newAllJiffies - _oldAllJiffies;
     char buffer[32];
-//    if (allDelta != 0)
-//    {
-//        const double cpuUsage = static_cast<double>(procDelta) / static_cast<double>(allDelta);
-//        snprintf(buffer, sizeof(buffer), "CPU: %3.1f%%", 100.0*QThread::idealThreadCount()*cpuUsage);
-//        _cpuLabel->setText(QString(buffer));
-//        _oldProcJiffies = newProcJiffies;
-//        _oldAllJiffies = newAllJiffies;
-//    }
+
+    if (!_metricCPUUsageAlex){
+        const int pid = QCoreApplication::applicationPid();
+        const int newProcJiffies = getProcessJiffies(pid);
+        const int newAllJiffies = getTotalJiffies();
+        const int procDelta = newProcJiffies - _oldProcJiffies;
+        const int allDelta = newAllJiffies - _oldAllJiffies;
+        if (allDelta != 0)
+        {
+            const double cpuUsage = static_cast<double>(procDelta) / static_cast<double>(allDelta);
+            snprintf(buffer, sizeof(buffer), "CPU: %3.1f%%", 100.0*QThread::idealThreadCount()*cpuUsage);
+            _cpuLabel->setText(QString(buffer));
+            _oldProcJiffies = newProcJiffies;
+            _oldAllJiffies = newAllJiffies;
+        }
+    }
     snprintf(buffer, sizeof(buffer), "FPS: %3.1f", static_cast<double>(_frameCounter)*(1000.0/static_cast<double>(FPS_COUNTER_INTERVAL_MS)));
     _fpsLabel->setText(QString(buffer));
     _frameCounter = 0;

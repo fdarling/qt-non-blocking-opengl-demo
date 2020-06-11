@@ -20,6 +20,7 @@ public:
 private slots:
     void slot_ZoomChanged(int value);
     void slot_LagToggled(bool on);
+    void slot_AlexToggled(bool on);
     void slot_TargetFPSChanged(int value);
     void slot_FrameDrawn();
     void slot_UpdateStats();
@@ -30,4 +31,5 @@ private:
     int _frameCounter;
     int _oldProcJiffies;
     int _oldAllJiffies;
+    bool _metricCPUUsageAlex;
 };
