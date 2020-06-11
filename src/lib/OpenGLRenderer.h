@@ -31,7 +31,6 @@ private:
     void resizeGL(int w, int h);
 
     bool create();
-    void start();
     void run();
 
     QOpenGLContext *_glContext;

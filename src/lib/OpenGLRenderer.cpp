@@ -11,52 +11,25 @@ OpenGLRenderer::OpenGLRenderer()
 {
     _glWindow = new OpenGLWindow(this);
 
-//    _glThread = new OpenGLThread();
-
-//    connect(_glThread, &QThread::started, this, &OpenGLRenderer::start);
-//    connect(_glThread, &QThread::finished, _glThread, &QObject::deleteLater);
-
-//    moveToThread(_glThread);
-//    _glThread->start();
-
-//    create();
-
-    _frameTimer.start();
-
     thread = createInQThread([this](TerminateIfTruePtr stopper)
     {
-//        const DelayMeasuredIn DELAY = std::chrono::duration_cast<DelayMeasuredIn>(std::chrono::milliseconds((fps_limit) > 0 ?
-//                                      static_cast<int32_t>(1000.f / fps_limit) : 1));
+        if (!create()) return;
+        _frameTimer.start();
+
         while (!(*stopper))
         {
             run();
-//            DelayMeasuredIn elapsed;
-//            {
-//                DelayBlockMs<DelayMeasuredIn> delay(DELAY, &elapsed);//defines FPS, however it is MS delay ...
-//                (void)delay;
-//                renderStep();
-//            }
-//            emit singleRunFps(std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count());
         }
-
-//        const auto t = QApplication::instance()->thread();
-//        if (t->isRunning())
-//            surf->setOwningThread(t);
-
     });
-//    surf->setOwningThread(thread.get());
-//    thread->start();
 
-
-//    connect(thread.get(), &QThread::started, this, &OpenGLRenderer::start);
-//    connect(thread.get(), &QThread::finished, thread.get(), &QObject::deleteLater);
-
-//    moveToThread(thread.get());
     thread->start();
 }
 
 bool OpenGLRenderer::create()
 {
+    if(_glContext)
+        return true;
+
     _glContext = new QOpenGLContext();
     return _glContext->create();
 }
@@ -64,36 +37,6 @@ bool OpenGLRenderer::create()
 void OpenGLRenderer::stop()
 {
     thread.reset();
-
-//return;
-
-//    _mutex.lock();
-//    _running = false;
-//    _mutex.unlock();
-
-//    _glThread->requestInterruption();
-//    _glThread->wait();
-}
-
-void OpenGLRenderer::start()
-{
-    if (!create()) return;
-
-    _running = true;
-    _frameTimer.start();
-
-
-
-    while(1) {
-        _mutex.lock();
-        if (!_running){
-            _mutex.unlock();
-            return;
-        }
-
-        _mutex.unlock();
-        run();
-    }
 }
 
 void OpenGLRenderer::resizeGL(int w, int h)
@@ -105,15 +48,13 @@ void OpenGLRenderer::resizeGL(int w, int h)
 void OpenGLRenderer::run()
 {
     // Save some cycles and only run if the window is being exposed
-//    if (_glWindow->isExposed()) {
-//        _glContext->makeCurrent(_glWindow);
+    if (_glWindow->isExposed()) {
+        _glContext->makeCurrent(_glWindow);
 
-//        QOpenGLFunctions_3_0 * const f = _glContext->versionFunctions<QOpenGLFunctions_3_0>();
-//        paintGL(f);
-//        _glContext->swapBuffers(_glWindow);
+        QOpenGLFunctions_3_0 * const f = _glContext->versionFunctions<QOpenGLFunctions_3_0>();
+        paintGL(f);
+        _glContext->swapBuffers(_glWindow);
         swapGL();
-
-        QThread::msleep(25);
 
         if (_targetFPS>0){
             float targetElapsedNsecs = 1.0 / _targetFPS * 1000000000.0;
@@ -125,12 +66,11 @@ void OpenGLRenderer::run()
         }
 
         _frameTimer.restart();
-//    }
+    }
 }
 
 QWidget* OpenGLRenderer::createWidget(QWidget* parent)
 {
-//    return new QWidget(parent);
     return QWidget::createWindowContainer(_glWindow, parent);
 }
 
