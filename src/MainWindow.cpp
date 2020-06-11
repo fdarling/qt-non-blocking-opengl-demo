@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QCoreApplication>
 #include <QThread>
+#include <QSpinBox>
 #include "cpuusage.h"
 
 static const int FPS_COUNTER_INTERVAL_MS = 1000;
@@ -34,9 +35,12 @@ MainWindow::MainWindow(QWidget *parent)
         connect(slider, SIGNAL(valueChanged(int)), this, SLOT(slot_ZoomChanged(int)));
         vbox->addWidget(slider);
 
-        /*QPushButton * const resetButton = new QPushButton("Reset");
-        connect(resetButton, SIGNAL(clicked()), this, SLOT(slot_ResetClicked()));
-        vbox->addWidget(resetButton);*/
+        QSpinBox *spinBox = new QSpinBox;
+        spinBox->setRange(0, 240);
+        spinBox->setSingleStep(1);
+        spinBox->setValue(60);
+        connect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(slot_TargetFPSChanged(int)));
+        vbox->addWidget(spinBox);
 
         QCheckBox * const lagCheckbox = new QCheckBox("Enable OpenGL Lag");
         connect(lagCheckbox, SIGNAL(toggled(bool)), this, SLOT(slot_LagToggled(bool)));
@@ -72,10 +76,10 @@ void MainWindow::slot_LagToggled(bool on)
     _demoRenderer->setLagEnabled(on);
 }
 
-/*void MainWindow::slot_ResetClicked()
+void MainWindow::slot_TargetFPSChanged(int value)
 {
-    delayedInit();
-}*/
+    _demoRenderer->setTargetFPS(value);
+}
 
 void MainWindow::slot_FrameDrawn()
 {

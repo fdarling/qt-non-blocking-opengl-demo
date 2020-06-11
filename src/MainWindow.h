@@ -20,7 +20,7 @@ public:
 private slots:
     void slot_ZoomChanged(int value);
     void slot_LagToggled(bool on);
-    // void slot_ResetClicked();
+    void slot_TargetFPSChanged(int value);
     void slot_FrameDrawn();
     void slot_UpdateStats();
 private:
