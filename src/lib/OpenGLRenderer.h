@@ -7,7 +7,6 @@
 #include <QElapsedTimer>
 #include <QMutex>
 #include "OpenGLWindow.h"
-#include "OpenGLThread.h"
 #include "lambda_thread.h"
 
 class OpenGLRenderer : public QObject

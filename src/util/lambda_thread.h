@@ -16,14 +16,6 @@ inline TerminateIfTruePtr createSharedAtomic(bool value)
     return std::make_shared<std::atomic<bool>>(value);
 }
 
-
-//tests atomic bool for expected, if it is - sets it to !expected and returns true
-inline bool testandflip(std::atomic<bool>& var, const bool expected)
-{
-    bool exp{expected};
-    return var.compare_exchange_strong(exp, !expected);
-}
-
 class LambdaThread : public QThread
 {
     Q_OBJECT
