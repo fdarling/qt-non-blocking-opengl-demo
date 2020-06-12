@@ -5,7 +5,7 @@ OpenGLThread::OpenGLThread(FrameFunc callback)
     : _callback(callback)
 {
     qDebug() << "OpenGLThread : " << "constructed";
-    setTerminationEnabled(false);
+//    setTerminationEnabled(false);
     _running = true;
 }
 
@@ -18,7 +18,7 @@ void OpenGLThread::stop()
 {
     qDebug() << "OpenGLThread : " << "stoping";
 
-    requestInterruption();
+//    requestInterruption();
     _running = false;
     wait();
 
