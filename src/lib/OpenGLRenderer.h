@@ -18,6 +18,7 @@ public:
     explicit OpenGLRenderer();
     QWidget* createWidget(QWidget* parent);
     void setTargetFPS(int targetFps);
+    void stop();
 
 protected:
     virtual void paintGL(QOpenGLFunctions_3_0 * const glFunc) = 0;
@@ -26,7 +27,6 @@ protected:
     int _width, _height;
 
 private:
-    void stop();
     void resizeGL(int w, int h);
 
     bool create();

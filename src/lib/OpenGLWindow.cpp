@@ -13,7 +13,6 @@ OpenGLWindow::OpenGLWindow(OpenGLRenderer *glRenderer)
 
 OpenGLWindow::~OpenGLWindow()
 {
-    _glRenderer->stop();
 }
 
 void OpenGLWindow::initializeGL()
