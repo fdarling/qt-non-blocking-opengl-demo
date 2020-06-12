@@ -11,18 +11,9 @@ OpenGLRenderer::OpenGLRenderer()
 {
     _glWindow = new OpenGLWindow(this);
 
-    thread = createInQThread([this](TerminateIfTruePtr stopper)
-    {
-        if (!create()) return;
-        _frameTimer.start();
+    _glThread = new OpenGLThread(std::bind(&OpenGLRenderer::run, this));
 
-        while (!(*stopper))
-        {
-            run();
-        }
-    });
-
-    thread->start();
+    _glThread->start();
 }
 
 bool OpenGLRenderer::create()
@@ -30,13 +21,16 @@ bool OpenGLRenderer::create()
     if(_glContext)
         return true;
 
+    _frameTimer.start();
+
     _glContext = new QOpenGLContext();
     return _glContext->create();
 }
 
 void OpenGLRenderer::stop()
 {
-    thread.reset();
+    _glThread->stop();
+    delete  _glThread;
 }
 
 void OpenGLRenderer::resizeGL(int w, int h)
@@ -47,6 +41,9 @@ void OpenGLRenderer::resizeGL(int w, int h)
 
 void OpenGLRenderer::run()
 {
+    if (!create())
+        return;
+
     // Save some cycles and only run if the window is being exposed
     if (_glWindow->isExposed()) {
         _glContext->makeCurrent(_glWindow);
