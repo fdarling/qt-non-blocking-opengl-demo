@@ -77,12 +77,6 @@ MainWindow::~MainWindow()
     delete _demoRenderer;
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
-{
-    _demoRenderer->stop();
-    qDebug() << "MainWindow : close";
-}
-
 void MainWindow::slot_ZoomChanged(int value)
 {
     _demoRenderer->setScale(static_cast<float>(value) / 50.0);

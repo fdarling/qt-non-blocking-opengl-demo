@@ -10,7 +10,7 @@ public:
 
     using FrameFunc = std::function<void()>;
 
-    OpenGLThread(FrameFunc callback);
+    OpenGLThread(FrameFunc callback, QObject *parent = nullptr);
     ~OpenGLThread();
 
     void stop();

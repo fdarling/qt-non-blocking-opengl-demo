@@ -11,9 +11,14 @@ OpenGLRenderer::OpenGLRenderer()
 {
     _glWindow = new OpenGLWindow(this);
 
-    _glThread = new OpenGLThread(std::bind(&OpenGLRenderer::run, this));
+    _glThread = new OpenGLThread(std::bind(&OpenGLRenderer::run, this), this);
 
     _glThread->start();
+}
+
+OpenGLRenderer::~OpenGLRenderer()
+{
+    _glThread->stop();
 }
 
 bool OpenGLRenderer::create()
@@ -25,12 +30,6 @@ bool OpenGLRenderer::create()
 
     _glContext = new QOpenGLContext();
     return _glContext->create();
-}
-
-void OpenGLRenderer::stop()
-{
-    _glThread->stop();
-    delete  _glThread;
 }
 
 void OpenGLRenderer::resizeGL(int w, int h)

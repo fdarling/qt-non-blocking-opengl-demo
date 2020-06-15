@@ -1,8 +1,9 @@
 #include "OpenGLThread.h"
 #include <QDebug>
 
-OpenGLThread::OpenGLThread(FrameFunc callback)
-    : _callback(callback)
+OpenGLThread::OpenGLThread(FrameFunc callback, QObject *parent)
+    : QThread(parent),
+    _callback(callback)
 {
     qDebug() << "OpenGLThread : " << "constructed";
 //    setTerminationEnabled(false);
