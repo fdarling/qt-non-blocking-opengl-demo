@@ -111,16 +111,10 @@ void DemoRenderer::paintGL(QOpenGLFunctions_3_0 * const f)
     f->glRotatef(angle, 1.0f, 1.0f, 1.0f);
 
     DrawCube(f);
-}
-
-void DemoRenderer::swapGL()
-{
+    
     if (_lagEnabled)
         QThread::msleep( 250 );
-
-    emit frameSwapped();
 }
-
 
 void DemoRenderer::setScale(float newScale)
 {

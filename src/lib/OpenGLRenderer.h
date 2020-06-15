@@ -19,10 +19,10 @@ public:
     ~OpenGLRenderer();
     QWidget* createWidget(QWidget* parent);
     void setTargetFPS(int targetFps);
-
+signals:
+    void frameSwapped();
 protected:
     virtual void paintGL(QOpenGLFunctions_3_0 * const glFunc) = 0;
-    virtual void swapGL() = 0;
 
     int _width, _height;
 

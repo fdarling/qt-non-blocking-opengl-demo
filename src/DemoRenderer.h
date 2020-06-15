@@ -13,13 +13,8 @@ public:
 
     void setScale(float newScale);
     void setLagEnabled(bool on);
-
-signals:
-    void frameSwapped();
-
 protected:
     virtual void paintGL(QOpenGLFunctions_3_0 * const glFunc);
-    virtual void swapGL();
 
 private:
     QElapsedTimer _timer;

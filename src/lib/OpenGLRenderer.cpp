@@ -51,7 +51,7 @@ void OpenGLRenderer::run()
         QOpenGLFunctions_3_0 * const f = _glContext->versionFunctions<QOpenGLFunctions_3_0>();
         paintGL(f);
         _glContext->swapBuffers(_glWindow);
-        swapGL();
+        emit frameSwapped();
 
         if (_targetFPS>0){
             float targetElapsedNsecs = 1.0 / _targetFPS * 1000000000.0;
