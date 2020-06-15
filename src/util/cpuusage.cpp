@@ -1,12 +1,8 @@
-#include <QObject>
+#include <QtGlobal>
+#include <QFile>
+
 #include "cpuusage.h"
-#include <string>
-#include <vector>
-#include <cstdio>
-#include <sstream>
-#include <fstream>
 #include <chrono>
-#include "strfmt.h"
 
 #ifdef Q_OS_LINUX
     #include <sys/vfs.h>
@@ -31,64 +27,6 @@
         #endif
     #endif
 #endif
-
-//from this article: http://cpp.indi.frih.net/blog/2014/09/how-to-read-an-entire-file-into-memory-in-cpp/
-template <typename CharT = char,
-          typename Traits = std::char_traits<char>>
-std::streamsize streamSizeToEnd(std::basic_istream<CharT, Traits>& in)
-{
-    auto const start_pos = in.tellg();
-    if (std::streamsize(-1) == start_pos)
-        throw std::ios_base::failure{"error"};
-
-    if (!in.ignore(std::numeric_limits<std::streamsize>::max()))
-        throw std::ios_base::failure{"error"};
-
-    const std::streamsize char_count = in.gcount();
-
-    if (!in.seekg(start_pos))
-        throw std::ios_base::failure{"error"};
-
-    return char_count;
-}
-
-template <typename Container = std::string,
-          typename CharT = char,
-          typename Traits = std::char_traits<char>>
-Container read_stream_into_container(
-    std::basic_istream<CharT, Traits>& in,
-    typename Container::allocator_type alloc = {})
-{
-    static_assert(
-        // Allow only strings...
-        std::is_same<Container, std::basic_string<CharT,
-        Traits,
-        typename Container::allocator_type>>::value ||
-        // ... and vectors of the plain, signed, and
-        // unsigned flavours of CharT.
-        std::is_same<Container, std::vector<CharT,
-        typename Container::allocator_type>>::value ||
-        std::is_same<Container, std::vector<
-        typename std::make_unsigned<CharT>::type,
-        typename Container::allocator_type>>::value ||
-        std::is_same<Container, std::vector<
-        typename std::make_signed<CharT>::type,
-        typename Container::allocator_type>>::value,
-        "only strings and vectors of ((un)signed) CharT allowed");
-
-    auto const char_count = streamSizeToEnd(in);
-
-    auto container = Container(std::move(alloc));
-    container.resize(char_count);
-
-    if (0 != container.size())
-    {
-        if (!in.read(reinterpret_cast<CharT*>(&container[0]), container.size()))
-            throw std::ios_base::failure{"File size differs"};
-    }
-    return container;
-}
-
 
 CpuUsage::CpuUsage()
 {
@@ -123,25 +61,17 @@ double CpuUsage::getCpuUsage()
 int CpuUsage::updateStatFromFs()
 {
 #ifdef Q_OS_LINUX
-    std::fstream io(stringfmt("/proc/%d/stat", getpid()), std::ios_base::in );
-    std::string fulls;
-    try
-    {
-        fulls = read_stream_into_container(io);
-    }
-    catch (std::ios_base::failure& e)
-    {
-    }
-    if (fulls.length())
-    {
-        auto tokens = split(fulls, ' ');
-        if (tokens.size() < 14)
-            return -1;
-        cputime = std::atoi(tokens.at(13).c_str()) * 1000 / HZ;
-        cputime += std::atoi(tokens.at(14).c_str()) * 1000 / HZ;
-    }
-    else
+    const QString pidString = QString::number(getpid());
+    QFile pidStat(QString("/proc/") + pidString + QString("/stat"));
+    if (!pidStat.open(QIODevice::ReadOnly | QIODevice::Text))
         return -1;
+    const QString line = pidStat.readLine();
+    const QStringList words = line.split(' ');
+    if (words.size() < 14)
+        return -1;
+    if (words.at(0) != pidString)
+        return -1;
+    cputime = (words.at(13).toInt() + words.at(14).toInt()) * 1000 / HZ;
 #else
 #error "Not Implemented for this OS"
 #endif
