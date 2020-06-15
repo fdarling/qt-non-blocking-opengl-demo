@@ -2,7 +2,7 @@
 #include "cpuusage.h"
 #include <string>
 #include <vector>
-#include <stdio.h>
+#include <cstdio>
 #include <sstream>
 #include <fstream>
 #include <chrono>
