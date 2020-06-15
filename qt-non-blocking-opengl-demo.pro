@@ -20,8 +20,6 @@ HEADERS += \
     src/lib/OpenGLWindow.h \
     src/lib/OpenGLRenderer.h \
     src/lib/OpenGLThread.h \
-    src/util/cm_ctors.h \
     src/util/cpuusage.h \
-    src/util/lambda_thread.h \
     src/util/strfmt.h
 
