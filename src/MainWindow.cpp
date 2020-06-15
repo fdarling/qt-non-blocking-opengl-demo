@@ -17,7 +17,7 @@
 static const int FPS_COUNTER_INTERVAL_MS = 1000;
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), _cpuLabel(nullptr), _fpsLabel(nullptr), _frameCounter(0), _oldProcJiffies(0), _oldAllJiffies(0), _metricCPUUsageAlex(false)
+    : QMainWindow(parent), _cpuLabel(nullptr), _fpsLabel(nullptr), _frameCounter(0), _oldProcJiffies(0), _oldAllJiffies(0)
 {
     _demoRenderer = new DemoRenderer(this);
 
@@ -43,10 +43,6 @@ MainWindow::MainWindow(QWidget *parent)
         connect(lagCheckbox, SIGNAL(toggled(bool)), this, SLOT(slot_LagToggled(bool)));
         hbox->addWidget(lagCheckbox);
 
-        QCheckBox * const alexCheckbox = new QCheckBox("CPU Usage like Alexzk");
-        connect(alexCheckbox, SIGNAL(toggled(bool)), this, SLOT(slot_AlexToggled(bool)));
-        hbox->addWidget(alexCheckbox);
-
         QSpinBox *spinBox = new QSpinBox;
         spinBox->setRange(0, 240);
         spinBox->setSingleStep(1);
@@ -57,10 +53,12 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(dummy);
     {
         QStatusBar * const statusBar = new QStatusBar;
-        _cpuLabel = new QLabel("CPU: 20%");
-        _fpsLabel = new QLabel("FPS: 32.4");
+        _cpuLabel = new QLabel("CPU: 0%");
+        _cpuLabelAlex = new QLabel("CPU: 0%");
+        _fpsLabel = new QLabel("FPS: 0.0");
         statusBar->insertPermanentWidget(0, _cpuLabel);
-        statusBar->insertPermanentWidget(1, _fpsLabel);
+        statusBar->insertPermanentWidget(1, _cpuLabelAlex);
+        statusBar->insertPermanentWidget(2, _fpsLabel);
         setStatusBar(statusBar);
     }
     resize(640, 480);
@@ -85,11 +83,6 @@ void MainWindow::slot_LagToggled(bool on)
     _demoRenderer->setLagEnabled(on);
 }
 
-void MainWindow::slot_AlexToggled(bool on)
-{
-    _metricCPUUsageAlex = on;
-}
-
 void MainWindow::slot_TargetFPSChanged(int value)
 {
     _demoRenderer->setTargetFPS(value);
@@ -99,14 +92,14 @@ void MainWindow::slot_FrameDrawn()
 {
     _frameCounter++;
 
-    if (_metricCPUUsageAlex){
+    {
         static CpuUsage usage;
         static int64_t u = usage.getCpuUsage() * 100.f;
         static uint64_t cntru = 1;
         if ((++cntru) % 10 == 0)
             u = usage.getCpuUsage() * 100.f;
 
-        _cpuLabel->setText(QStringLiteral("CPU: %1%").arg(u));
+        _cpuLabelAlex->setText(QStringLiteral("CPU: %1%").arg(u));
     }
 }
 
@@ -155,7 +148,7 @@ void MainWindow::slot_UpdateStats()
 {
     char buffer[32];
 
-    if (!_metricCPUUsageAlex){
+    {
         const int pid = QCoreApplication::applicationPid();
         const int newProcJiffies = getProcessJiffies(pid);
         const int newAllJiffies = getTotalJiffies();
