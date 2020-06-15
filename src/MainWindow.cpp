@@ -11,7 +11,6 @@
 #include <QCoreApplication>
 #include <QThread>
 #include <QSpinBox>
-#include <QDebug>
 #include "cpuusage.h"
 
 static const int FPS_COUNTER_INTERVAL_MS = 1000;
@@ -70,7 +69,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    qDebug() << "MainWindow : destructed";
 }
 
 void MainWindow::slot_ZoomChanged(int value)

@@ -3,7 +3,6 @@
 #include <QOpenGLFunctions_3_3_Core>
 #include <cmath>
 #include <QThread>
-#include <QDebug>
 #include <QWidget>
 
 OpenGLRenderer::OpenGLRenderer(QObject *parent)
