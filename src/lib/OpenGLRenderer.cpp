@@ -6,8 +6,9 @@
 #include <QDebug>
 #include <QWidget>
 
-OpenGLRenderer::OpenGLRenderer()
-    : _glContext(nullptr)
+OpenGLRenderer::OpenGLRenderer(QObject *parent)
+    : QObject(parent),
+    _glContext(nullptr)
 {
     _glWindow = new OpenGLWindow(this);
 

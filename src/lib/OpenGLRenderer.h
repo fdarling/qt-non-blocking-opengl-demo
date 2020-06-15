@@ -15,7 +15,7 @@ class OpenGLRenderer : public QObject
 
     Q_OBJECT
 public:
-    explicit OpenGLRenderer();
+    explicit OpenGLRenderer(QObject *parent = nullptr);
     ~OpenGLRenderer();
     QWidget* createWidget(QWidget* parent);
     void setTargetFPS(int targetFps);

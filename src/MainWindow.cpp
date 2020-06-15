@@ -19,7 +19,7 @@ static const int FPS_COUNTER_INTERVAL_MS = 1000;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), _cpuLabel(nullptr), _fpsLabel(nullptr), _frameCounter(0), _oldProcJiffies(0), _oldAllJiffies(0), _metricCPUUsageAlex(false)
 {
-    _demoRenderer = new DemoRenderer();
+    _demoRenderer = new DemoRenderer(this);
 
     QWidget * const dummy = new QWidget;
     {
@@ -72,9 +72,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    qDebug() << "MainWindow : destruted";
-
-    delete _demoRenderer;
+    qDebug() << "MainWindow : destructed";
 }
 
 void MainWindow::slot_ZoomChanged(int value)

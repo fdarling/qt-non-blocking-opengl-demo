@@ -9,7 +9,7 @@ class DemoRenderer : public OpenGLRenderer
 {
     Q_OBJECT
 public:
-    explicit DemoRenderer();
+    explicit DemoRenderer(QObject *parent = nullptr);
 
     void setScale(float newScale);
     void setLagEnabled(bool on);

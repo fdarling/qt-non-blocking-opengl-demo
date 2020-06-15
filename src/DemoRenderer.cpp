@@ -78,8 +78,8 @@ void gldPerspective(QOpenGLFunctions_3_0 *f, GLdouble fovx, GLdouble aspect, GLd
     f->glMultMatrixd(m);
 }
 
-DemoRenderer::DemoRenderer()
-    :OpenGLRenderer()
+DemoRenderer::DemoRenderer(QObject *parent)
+    : OpenGLRenderer(parent)
 {
     _timer.start();
 }
