@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
         connect(slider, SIGNAL(valueChanged(int)), this, SLOT(slot_ZoomChanged(int)));
         vbox->addWidget(slider);
 
-        QHBoxLayout * const hbox = new QHBoxLayout(dummy);
+        QHBoxLayout * const hbox = new QHBoxLayout;
         vbox->addLayout(hbox);
 
         QCheckBox * const lagCheckbox = new QCheckBox("Enable OpenGL Lag");
