@@ -17,7 +17,6 @@ public:
 
 protected:
     void run() override;
-    std::atomic<bool> _running;
 
 private:
     FrameFunc _callback;
