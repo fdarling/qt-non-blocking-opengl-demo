@@ -88,17 +88,22 @@ void MainWindow::slot_TargetFPSChanged(int value)
 
 void MainWindow::slot_FrameDrawn()
 {
-    _frameCounter++;
-
     {
         static CpuUsage usage;
-        static int64_t u = usage.getCpuUsage() * 100.f;
-        static uint64_t cntru = 1;
-        if ((++cntru) % 10 == 0)
+        static double u = 0.0;
+        static int counter = 0;
+        if (counter % 10 == 0)
+        {
             u = usage.getCpuUsage() * 100.f;
+        }
+        counter++;
+        char buffer[32];
+        snprintf(buffer, sizeof(buffer), "CPU: %3.1f%%", u);
 
-        _cpuLabelAlex->setText(QStringLiteral("CPU: %1%").arg(u));
+        _cpuLabelAlex->setText(buffer);
     }
+
+    _frameCounter++;
 }
 
 // https://stackoverflow.com/questions/1420426/how-to-calculate-the-cpu-usage-of-a-process-by-pid-in-linux-from-c

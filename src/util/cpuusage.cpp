@@ -35,6 +35,7 @@ CpuUsage::CpuUsage()
 double CpuUsage::getCpuUsage()
 {
     constexpr static double ALPHA = 0.1;
+    const bool invalidUsage = (cpu_usage < 0);
 
     using namespace std::chrono;
     auto old  = cputime;
@@ -47,12 +48,12 @@ double CpuUsage::getCpuUsage()
 
     const double sample = 1.0 * (cputime - old) / dt;
 
-    if (cpu_usage < 0)
+    if (invalidUsage)
         cpu_usage = std::abs(sample);
     else
         cpu_usage = (1.0 - ALPHA) * cpu_usage + ALPHA * sample;
 
-    if (cpu_usage < 0)
+    if (invalidUsage)
         cpu_usage = std::abs(sample);
 
     return cpu_usage;
